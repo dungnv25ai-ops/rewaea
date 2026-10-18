@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Góc Nhỏ Học Tập - Full Edition</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Quicksand -->
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #fdf2f4;
+            background-image: radial-gradient(#FFD1DC 1px, transparent 1px);
+            background-size: 24px 24px;
+            color: #4a3b40;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF0F5;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #FDA4AF;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #FB7185;
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 440px;
+            height: 780px;
+            background: #fff9fa;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            border-radius: 28px;
+            overflow: hidden;
+            border: 4px solid #ffd1dc;
+        }
+
+        /* Header */
+        header {
+            background: #ffb6c1;
+            color: #5d3a42;
+            padding: 16px 20px 14px 20px;
+            text-align: center;
+            border-bottom-left-radius: 24px;
+            border-bottom-right-radius: 24px;
+            box-shadow: 0 4px 10px rgba(255, 182, 193, 0.3);
+            flex-shrink: 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header h1 {
+            font-size: 18px;
+            margin-bottom: 2px;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 11px;
+            opacity: 0.85;
+        }
+
+        /* Main Content / Tab Views */
+        .tab-content {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
+            padding: 12px 16px 16px 16px;
+            overflow-y: auto;
+        }
+
+        .tab-content.active {
+            display: flex;
+        }
+
+        /* Giao diện Thời Gian Biểu bên trong Tab */
+        .schedule-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .schedule-header-actions {
+            display: flex;
+            justify-content: space-between;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            padding: 6px 10px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .btn-pink {
+            background: #f472b6;
+            color: white;
+            box-shadow: 0 2px 6px rgba(244, 114, 182, 0.4);
+        }
+
+        .btn-pink:hover {
+            background: #ec4899;
+        }
+
+        .btn-ai {
+            background: linear-gradient(135deg, #a855f7, #ec4899);
+            color: white;
+            box-shadow: 0 2px 6px rgba(168, 85, 247, 0.3);
+        }
+
+        .btn-ai:hover {
+            opacity: 0.95;
+        }
+
+        .noti-banner {
+            background: #fdf2f8;
+            border: 1px dashed #f472b6;
+            border-radius: 10px;
+            padding: 6px 8px;
+            font-size: 10px;
+            color: #be185d;
+            text-align: center;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .upcoming-reminder {
+            background: #ffe4e8;
+            border: 1px solid #ffccd5;
+            border-radius: 10px;
+            padding: 6px 10px;
+            font-size: 10px;
+            color: #8c626d;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Bảng thời gian biểu */
+        .table-wrapper {
+            flex: 1;
+            overflow-x: auto;
+            overflow-y: auto;
+            border-radius: 12px;
+            border: 2px solid #fbcfe8;
+            background: #fff5f8;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            table-layout: fixed;
+        }
+
+        .time-col {
+            width: 50px;
+            min-width: 50px;
+            max-width: 50px;
+        }
+
+        th, td {
+            width: 95px;
+            min-width: 95px;
+            border: 1px solid #fbcfe8;
+            padding: 4px;
+            text-align: center;
+            font-size: 11px;
+            background-color: #fff5f8;
+            height: 36px;
+            vertical-align: top;
+            position: relative;
+        }
+
+        th {
+            background: #fce7f3;
+            color: #db2777;
+            font-weight: 800;
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            height: 30px;
+        }
+
+        .time-col {
+            background: #fff0f5;
+            font-weight: 700;
+            color: #be185d;
+            position: sticky;
+            left: 0;
+            z-index: 10;
+        }
+
+        thead th.time-col {
+            z-index: 30;
+        }
+
+        /* Khối sự kiện dạng dải ô vuông */
+        .event-block {
+            position: absolute;
+            left: 2px;
+            right: 2px;
+            background: #f472b6;
+            color: white;
+            padding: 3px 5px;
+            border-radius: 8px;
+            font-size: 9px;
+            font-weight: 700;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(244, 114, 182, 0.3);
+            z-index: 5;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            cursor: pointer;
+        }
+
+        .event-name-text {
+            word-break: break-word;
+            white-space: normal;
+            line-height: 1.15;
+        }
+
+        .event-line {
+            position: absolute;
+            left: 2px;
+            right: 2px;
+            background: #ec4899;
+            color: white;
+            padding: 3px 5px;
+            border-radius: 6px;
+            font-size: 9px;
+            font-weight: 700;
+            text-align: left;
+            box-shadow: 0 2px 4px rgba(244, 114, 182, 0.3);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            border-top: 2px solid #ffffff;
+            cursor: pointer;
+        }
+
+        .event-time {
+            font-size: 8px;
+            opacity: 0.95;
+            font-weight: 500;
+            margin-top: 1px;
+            word-break: break-word;
+        }
+
+        .event-del {
+            position: absolute;
+            top: 2px;
+            right: 3px;
+            cursor: pointer;
+            font-size: 9px;
+            opacity: 0.85;
+            z-index: 6;
+        }
+
+        /* MODAL COMMON */
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(2px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.25s;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal {
+            background: white;
+            width: 92%;
+            max-width: 360px;
+            padding: 18px;
+            border-radius: 20px;
+            border: 3px solid #fbcfe8;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #db2777;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 10px;
+            font-weight: 700;
+            color: #db2777;
+            margin-bottom: 3px;
+            text-transform: uppercase;
+        }
+
+        .form-control {
+            width: 100%;
+            background: #fff5f8;
+            border: 2px solid #fbcfe8;
+            border-radius: 10px;
+            padding: 8px 10px;
+            font-size: 12px;
+            color: #831843;
+            outline: none;
+        }
+
+        .time-row {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .time-row select {
+            width: 50%;
+        }
+
+        .days-checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px;
+            background: #fff5f8;
+            border: 2px solid #fbcfe8;
+            border-radius: 10px;
+            padding: 8px;
+        }
+
+        .days-checkbox-group label {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 10px;
+            color: #831843;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: none;
+            margin-bottom: 0;
+        }
+
+        /* Tab Thông tin tài khoản */
+        .info-content-box {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 100%;
+            max-width: 373px;
+            margin-top: 4px;
+        }
+
+        .info-card {
+            background: #ffe4e8;
+            padding: 12px 16px;
+            border-radius: 16px;
+            border: 1px solid #ffccd5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .info-card h3 {
+            font-size: 13px;
+            color: #5d3a42;
+            font-weight: 600;
+        }
+
+        .info-details-text {
+            font-size: 12px;
+            color: #643843;
+            line-height: 1.5;
+            width: 100%;
+        }
+
+        .subject-tag-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-top: 6px;
+            width: 100%;
+        }
+
+        .subject-badge {
+            background: #fff0f5;
+            border: 1px solid #fbcfe8;
+            color: #be185d;
+            padding: 5px 9px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 2px 4px rgba(251, 207, 232, 0.4);
+        }
+
+        .btn-gear-icon {
+            background: #f472b6;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        }
+        .btn-gear-icon:hover {
+            background: #ec4899;
+        }
+
+        .vip-btn {
+            background: #ff85a1;
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(255, 133, 161, 0.3);
+            transition: background 0.2s;
+        }
+
+        .vip-btn:hover {
+            background: #ff6f91;
+        }
+
+        .edit-info-btn {
+            background: #38bdf8;
+            color: white;
+            padding: 9px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            margin-top: 4px;
+            box-shadow: 0 2px 6px rgba(56, 189, 248, 0.3);
+        }
+        .edit-info-btn:hover {
+            background: #0284c7;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            padding: 9px;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            margin-top: 2px;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        }
+        .logout-btn:hover {
+            background: #dc2626;
+        }
+
+        .auth-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #fff9fa;
+            z-index: 200;
+            display: flex;
+            flex-direction: column;
+            padding: 24px 20px;
+            overflow-y: auto;
+        }
+
+        .auth-overlay.hidden {
+            display: none !important;
+        }
+
+        .auth-header {
+            text-align: center;
+            margin-bottom: 16px;
+        }
+        .auth-header h2 { font-size: 18px; font-weight: 800; color: #db2777; margin-bottom: 4px; }
+        .auth-header p { font-size: 11px; color: #f472b6; font-weight: 600; }
+
+        .tab-bar { display: flex; background: #fff5f8; border: 2px solid #fbcfe8; border-radius: 14px; padding: 3px; margin-bottom: 14px; }
+        .tab-btn { flex: 1; background: none; border: none; padding: 8px; border-radius: 10px; font-weight: 700; font-size: 12px; color: #db2777; cursor: pointer; transition: all 0.2s; }
+        .tab-btn.active { background: #f472b6; color: white; box-shadow: 0 3px 10px rgba(244, 114, 182, 0.35); }
+
+        .dob-container { display: flex; align-items: center; gap: 6px; }
+        .dob-input { width: 50px; text-align: center; font-weight: 700; }
+        .dob-separator { font-weight: 800; color: #f472b6; font-size: 14px; }
+
+        .alert-msg { font-size: 11px; font-weight: 700; text-align: center; margin-top: 8px; min-height: 16px; }
+        .text-error { color: #dc2626; }
+        .text-success { color: #16a34a; }
+
+        /* GIAO DIỆN NẠP VIP TÍCH HỢP */
+        .sec-title { font-size: 11px; font-weight: 800; color: #db2777; text-transform: uppercase; margin-bottom: 8px; display: flex; align-items: center; gap: 4px; }
+
+        .packages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 14px; }
+        .pkg-card { background: #fff5f8; border: 2px solid #fbcfe8; border-radius: 14px; padding: 10px 4px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative; }
+        .pkg-card:hover { border-color: #f472b6; }
+        .pkg-card.active { background: white; border-color: #f472b6; box-shadow: 0 4px 12px rgba(244, 114, 182, 0.3); }
+        .pkg-card .badge { position: absolute; top: -8px; right: 2px; background: #f472b6; color: white; font-size: 8px; font-weight: 800; padding: 2px 5px; border-radius: 8px; }
+        .pkg-duration { font-size: 12px; font-weight: 800; color: #be185d; margin-bottom: 2px; }
+        .pkg-price { font-size: 13px; font-weight: 800; color: #db2777; }
+        .pkg-sub { font-size: 9px; color: #f472b6; font-weight: 600; margin-top: 2px; }
+
+        .method-tabs { display: flex; gap: 4px; margin-bottom: 12px; overflow-x: auto; padding-bottom: 2px; }
+        .method-btn { flex: 1; min-width: 70px; background: #fff5f8; border: 1.5px solid #fbcfe8; color: #db2777; padding: 8px 4px; border-radius: 12px; font-weight: 700; font-size: 10px; cursor: pointer; transition: all 0.2s; white-space: nowrap; text-align: center; }
+        .method-btn.active { background: #f472b6; color: white; border-color: #f472b6; box-shadow: 0 2px 8px rgba(244, 114, 182, 0.3); }
+
+        .payment-detail { background: #fff5f8; border: 1.5px solid #fbcfe8; border-radius: 14px; padding: 12px; margin-bottom: 12px; display: none; }
+        .payment-detail.active { display: block !important; }
+
+        .info-row { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; border-bottom: 1px dashed #fbcfe8; font-size: 11px; }
+        .info-row:last-child { border-bottom: none; }
+        .info-label { font-weight: 700; color: #be185d; }
+        .info-val { font-weight: 800; color: #831843; }
+
+        .qr-box { text-align: center; margin: 8px 0; }
+        .qr-box img { width: 120px; height: 120px; border-radius: 12px; border: 2px solid #f472b6; padding: 4px; background: white; }
+
+        /* Navigation Bar */
+        .bottom-nav {
+            display: flex;
+            border-top: 1px solid #ffd1dc;
+            background: white;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 12px;
+            color: #b08991;
+            cursor: pointer;
+            border: none;
+            background: none;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: color 0.2s;
+        }
+
+        .nav-item.active {
+            color: #ff6f91;
+            font-weight: bold;
+        }
+
+        .nav-item:hover {
+            color: #ff85a1;
+        }
+
+        /* Styling cho tab Góc nhỏ học tập tích hợp */
+        .ght-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .ght-header-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #ffe4e8;
+            padding: 8px 12px;
+            border-radius: 14px;
+            border: 1px solid #ffccd5;
+        }
+
+        .ght-subject-scroll {
+            display: flex;
+            gap: 6px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .ght-sub-tab {
+            background: white;
+            border: 1.5px solid #fbcfe8;
+            color: #db2777;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .ght-sub-tab.active {
+            background: #f472b6;
+            color: white;
+            border-color: #f472b6;
+        }
+
+        .ght-nav-tabs {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            background: white;
+            padding: 4px;
+            border-radius: 12px;
+            border: 1.5px solid #fbcfe8;
+        }
+
+        .ght-inner-tab {
+            background: none;
+            border: none;
+            padding: 6px 4px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #db2777;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .ght-inner-tab.active {
+            background: #f472b6;
+            color: white;
+        }
+
+        .ght-content-box {
+            flex: 1;
+            background: white;
+            border: 2px solid #fbcfe8;
+            border-radius: 16px;
+            padding: 12px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Chữ NDTN làm to ra rõ nét */
+        .trial-notice {
+            font-size: 12px;
+            font-weight: 800;
+            color: #e11d48;
+            text-align: center;
+            margin-top: 14px;
+            padding: 12px 8px;
+            background: #fff1f2;
+            border: 2px dashed #fda4af;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 2px 6px rgba(225, 29, 72, 0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- MÀN HÌNH ĐĂNG NHẬP / ĐĂNG KÝ -->
+        <div id="auth-screen" class="auth-overlay">
+            <div class="auth-header">
+                <h2>🌸 Góc Nhỏ Học Tập 🌸</h2>
+                <p>Quản lý thông tin & dữ liệu riêng từng tài khoản</p>
+            </div>
+
+            <div class="tab-bar">
+                <button class="tab-btn active" id="tab-login" onclick="switchAuthTab('login')">Đăng Nhập</button>
+                <button class="tab-btn" id="tab-register" onclick="switchAuthTab('register')">Đăng Ký</button>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)">
+                <div class="form-group">
+                    <label>Tên tài khoản</label>
+                    <input type="text" id="auth-username" class="form-control" maxlength="20" placeholder="Nhập tên tài khoản..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <input type="password" id="auth-password" class="form-control" maxlength="50" placeholder="Nhập mật khẩu..." required>
+                </div>
+
+                <div id="register-fields" class="hidden">
+                    <div class="form-group">
+                        <label>Ngày sinh (Ngày / Tháng / Năm)</label>
+                        <div class="dob-container">
+                            <input type="text" id="dob-day" class="form-control dob-input" maxlength="2" placeholder="dd" oninput="moveToNext(this, 'dob-month', 2)">
+                            <span class="dob-separator">/</span>
+                            <input type="text" id="dob-month" class="form-control dob-input" maxlength="2" placeholder="mm" oninput="moveToNext(this, 'dob-year', 2)">
+                            <span class="dob-separator">/</span>
+                            <input type="text" id="dob-year" class="form-control dob-input" style="width: 70px;" maxlength="4" placeholder="yyyy">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Lớp hiện tại</label>
+                        <select id="user-grade" class="form-control">
+                            <!-- JS tự đổ Lớp 1 đến 12 -->
+                        </select>
+                    </div>
+                </div>
+
+                <button type="submit" id="auth-submit-btn" class="btn btn-pink" style="width: 100%; justify-content: center; padding: 10px; margin-top: 6px; font-size: 13px;">Đăng Nhập Ngay</button>
+                <div id="auth-alert" class="alert-msg"></div>
+            </form>
+        </div>
+
+        <!-- Header Chung -->
+        <header>
+            <div class="brand">
+                <div style="width: 32px; height: 32px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px;">🌸</div>
+                <div>
+                    <h1>Góc Nhỏ Học Tập</h1>
+                    <p id="header-greeting">Nơi quản lý thời gian và học tập</p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Tab 1: Thời gian biểu -->
+        <div id="tab-tkb" class="tab-content">
+            <div class="schedule-container">
+                <div class="schedule-header-actions">
+                    <button class="btn btn-ai" onclick="generateAISchedule()">✨ AI tạo lịch</button>
+                    <button class="btn btn-pink" onclick="openModal()">➕ Thêm lịch</button>
+                </div>
+
+                <div class="upcoming-reminder" id="upcoming-reminder">
+                    <span>📌 Lịch sắp tới: Chưa có sự kiện nào được lên lịch</span>
+                </div>
+
+                <div class="noti-banner" id="noti-banner">
+                    <span>🔔 Bật thông báo nhắc nhở giờ học!</span>
+                    <button onclick="requestNotiPermission()" style="background:#f472b6; color:white; border:none; padding:3px 8px; border-radius:6px; font-weight:700; cursor:pointer; font-size:10px;">Bật</button>
+                </div>
+
+                <div class="table-wrapper">
+                    <table id="schedule-table">
+                        <thead>
+                            <tr>
+                                <th class="time-col">Giờ</th>
+                                <th>Thứ 2</th>
+                                <th>Thứ 3</th>
+                                <th>Thứ 4</th>
+                                <th>Thứ 5</th>
+                                <th>Thứ 6</th>
+                                <th>Thứ 7</th>
+                                <th>CN</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedule-body">
+                            <!-- Render bằng JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 2: Góc nhỏ học tập (Hệ thống Bài tập & Đề kiểm tra SGK mới) -->
+        <div id="tab-ght" class="tab-content active">
+            <div class="ght-wrapper">
+                <div class="ght-header-bar">
+                    <!-- Lớp chỉ hiện, không thể chọn tại đây -->
+                    <span style="font-size: 11px; font-weight: 800; color: #be185d;" id="ght-grade-badge">📚 Khối lớp: --</span>
+                    <span style="font-size: 10px; color: #db2777; font-weight: 700;">SGK GDPT Mới</span>
+                </div>
+
+                <!-- Danh sách môn học đồng bộ theo phần thông tin -->
+                <div class="ght-subject-scroll" id="ght-subject-list">
+                    <!-- Đổ bằng JS -->
+                </div>
+
+                <!-- Thanh chọn loại nội dung -->
+                <div class="ght-nav-tabs">
+                    <button onclick="switchGhtTab('renLuyen')" id="ght-tab-renLuyen" class="ght-inner-tab active">📖 Rèn Luyện</button>
+                    <button onclick="switchGhtTab('thuongXuyen')" id="ght-tab-thuongXuyen" class="ght-inner-tab">⏱ T.Xuyên</button>
+                    <button onclick="switchGhtTab('giuaKy')" id="ght-tab-giuaKy" class="ght-inner-tab">🎯 Giữa Kỳ</button>
+                    <button onclick="switchGhtTab('cuoiKy')" id="ght-tab-cuoiKy" class="ght-inner-tab">🏆 Cuối Kỳ</button>
+                    <button onclick="switchGhtTab('baiCu')" id="ght-tab-baiCu" class="ght-inner-tab">🕒 Lịch Sử</button>
+                </div>
+
+                <!-- Khung hiển thị nội dung môn học -->
+                <div class="ght-content-box" id="ght-content-panel">
+                    <!-- Nội dung bài tập, đề kiểm tra -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 3: Thông tin -->
+        <div id="tab-info" class="tab-content">
+            <div class="info-content-box">
+                <div class="info-card">
+                    <h3>Mở khóa gói VIP</h3>
+                    <button class="vip-btn" onclick="openVipModal()">Xem</button>
+                </div>
+                
+                <div class="info-card" style="flex-direction: column; align-items: flex-start; gap: 6px;">
+                    <div class="info-details-text" id="info-vip-status"><b>Tài khoản:</b> Thường</div>
+                    <div class="info-details-text" id="info-username"><b>Tên tài khoản:</b> --</div>
+                    <div class="info-details-text" id="info-dob"><b>Ngày sinh:</b> --</div>
+                    <div class="info-details-text" id="info-grade"><b>Lớp hiện tại:</b> --</div>
+                    
+                    <div style="border-top: 1px dashed #fbcfe8; width: 100%; margin-top: 4px; padding-top: 6px;">
+                        <b style="font-size: 12px; color: #db2777; display: block; margin-bottom: 4px;" id="subject-title-grade">📚 Môn Học Hiện Tại:</b>
+                        <div class="subject-tag-list" id="subject-tag-list">
+                            <!-- Render môn học bằng JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <button class="edit-info-btn" onclick="openEditProfileModal()">Chỉnh Sửa Thông Tin ✏️</button>
+                <button class="logout-btn" onclick="handleLogout()">Đăng Xuất Tài Khoản 🚪</button>
+            </div>
+        </div>
+
+        <!-- MODAL TẠO / CHỈNH SỬA LỊCH -->
+        <div class="modal-overlay" id="event-modal">
+            <div class="modal">
+                <div class="modal-title" id="modal-main-title">➕ Tạo Thời Gian Mới</div>
+                <form onsubmit="saveEvent(event)">
+                    <input type="hidden" id="event-edit-id" value="">
+
+                    <div class="form-group">
+                        <label>Tên Sự Kiện / Môn Học (Tối đa 15 ký tự)</label>
+                        <input type="text" id="event-name" class="form-control" maxlength="15" placeholder="Ví dụ: Học Toán..." required oninput="validateEventName(this)">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Chọn Ngày Áp Dụng (Có thể chọn nhiều ngày)</label>
+                        <div class="days-checkbox-group">
+                            <label><input type="checkbox" name="event-days" value="2"> T2</label>
+                            <label><input type="checkbox" name="event-days" value="3"> T3</label>
+                            <label><input type="checkbox" name="event-days" value="4"> T4</label>
+                            <label><input type="checkbox" name="event-days" value="5"> T5</label>
+                            <label><input type="checkbox" name="event-days" value="6"> T6</label>
+                            <label><input type="checkbox" name="event-days" value="7"> T7</label>
+                            <label><input type="checkbox" name="event-days" value="8"> CN</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Thời Gian Bắt Đầu</label>
+                        <div class="time-row">
+                            <select id="start-hour" class="form-control"></select>
+                            <select id="start-min" class="form-control"></select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Thời Gian Kết Thúc (Tùy chọn)</label>
+                        <div class="time-row">
+                            <select id="end-hour" class="form-control">
+                                <option value="">-- Giờ --</option>
+                            </select>
+                            <select id="end-min" class="form-control">
+                                <option value="">-- Phút --</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:8px; margin-top:14px;">
+                        <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:50%; justify-content:center;" onclick="closeModal()">Hủy</button>
+                        <button type="submit" class="btn btn-pink" style="width:50%; justify-content:center;">Hoàn tất ✨</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL HIỂN THỊ CHI TIẾT SỰ KIỆN KHI BẤM VÀO -->
+        <div class="modal-overlay" id="detail-modal">
+            <div class="modal" style="text-align: center;">
+                <div class="modal-title" id="detail-title">📖 Chi Tiết Sự Kiện</div>
+                <div id="detail-content" style="font-size: 13px; color: #64748b; margin-bottom: 20px; line-height: 1.5;">
+                    <!-- Nội dung chi tiết được điền bằng JS -->
+                </div>
+                <div style="display: flex; gap: 8px;">
+                    <button type="button" class="btn btn-pink" style="flex: 1; justify-content: center; background: #38bdf8;" onclick="editCurrentEvent()">Chỉnh sửa ✏️</button>
+                    <button type="button" class="btn btn-pink" style="flex: 1; justify-content: center;" onclick="closeDetailModal()">Đóng</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL NẠP VIP TÍCH HỢP -->
+        <div class="modal-overlay" id="vip-modal">
+            <div class="modal">
+                <div class="modal-title">🌸 Nạp Tiền & Nâng Cấp VIP 🌸</div>
+                
+                <div class="sec-title">💎 Bước 1: Chọn gói nạp</div>
+                <div class="packages-grid">
+                    <div class="pkg-card" onclick="selectPackage('1m', 50000, this)">
+                        <div class="pkg-duration">1 THÁNG</div>
+                        <div class="pkg-price">50k</div>
+                        <div class="pkg-sub">Linh hoạt</div>
+                    </div>
+
+                    <div class="pkg-card active" onclick="selectPackage('5m', 220000, this)">
+                        <div class="badge">-30K</div>
+                        <div class="pkg-duration">5 THÁNG</div>
+                        <div class="pkg-price">220k</div>
+                        <div class="pkg-sub">44k/tháng</div>
+                    </div>
+
+                    <div class="pkg-card" onclick="selectPackage('1y', 500000, this)">
+                        <div class="badge">SIÊU HỜI</div>
+                        <div class="pkg-duration">1 NĂM</div>
+                        <div class="pkg-price">500k</div>
+                        <div class="pkg-sub">41k/tháng</div>
+                    </div>
+                </div>
+
+                <div class="sec-title">💳 Bước 2: Phương thức nạp</div>
+                <div class="method-tabs">
+                    <button class="method-btn active" onclick="selectMethod('momo', this)">📱 MoMo</button>
+                    <button class="method-btn" onclick="selectMethod('card', this)">📲 Thẻ Cào</button>
+                    <button class="method-btn" onclick="selectMethod('bank', this)">🏦 Ngân Hàng</button>
+                    <button class="method-btn" onclick="selectMethod('code', this)">🎁 Giftcode</button>
+                </div>
+
+                <div id="method-momo" class="payment-detail active">
+                    <div class="qr-box">
+                        <img id="momo-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=MOMO_GOCNHO_PAYMENT" alt="QR MoMo">
+                        <p style="font-size:9px; color:#f472b6; font-weight:700; margin-top:4px;">Quét QR bằng app MoMo để chuyển nhanh</p>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Số MoMo:</span>
+                        <span class="info-val">0250 025 025</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Tên người nhận:</span>
+                        <span class="info-val">GÓC NHỎ HỌC TẬP</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Số tiền:</span>
+                        <span class="info-val" id="momo-price-display" style="color:#db2777;">220.000 VNĐ</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Nội dung:</span>
+                        <span class="info-val" id="momo-note-display" style="color:#16a34a; font-size: 10px;">GOCNHO 5M [TàiKhoản]</span>
+                    </div>
+                </div>
+
+                <div id="method-card" class="payment-detail">
+                    <div class="form-group">
+                        <label>Nhà mạng</label>
+                        <select id="card-provider" class="form-control">
+                            <option value="viettel">Viettel</option>
+                            <option value="vinaphone">VinaPhone</option>
+                            <option value="mobifone">MobiFone</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Mã Serial</label>
+                        <input type="text" id="card-serial" class="form-control" placeholder="Nhập mã Serial...">
+                    </div>
+                    <div class="form-group">
+                        <label>Mã Thẻ (PIN)</label>
+                        <input type="text" id="card-pin" class="form-control" placeholder="Nhập mã sau lớp cào...">
+                    </div>
+                </div>
+
+                <div id="method-bank" class="payment-detail">
+                    <div class="qr-box">
+                        <img id="bank-qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=BANK_GOCNHO_PAYMENT" alt="QR Bank">
+                        <p style="font-size:9px; color:#f472b6; font-weight:700; margin-top:4px;">Mở App Ngân Hàng để quét QR</p>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Ngân hàng:</span>
+                        <span class="info-val">MB BANK</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Số TK:</span>
+                        <span class="info-val">0250 0250 0250</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Chủ TK:</span>
+                        <span class="info-val">GOC NHO HOC TAP</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Số tiền:</span>
+                        <span class="info-val" id="bank-price-display" style="color:#db2777;">220.000 VNĐ</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Nội dung:</span>
+                        <span class="info-val" id="bank-note-display" style="color:#16a34a; font-size: 10px;">GOCNHO 5M [TàiKhoản]</span>
+                    </div>
+                </div>
+
+                <div id="method-code" class="payment-detail">
+                    <p style="font-size:10px; color:#be185d; font-weight:700; margin-bottom:8px;">🎁 Nhập mã Giftcode do Admin cấp:</p>
+                    <div class="form-group">
+                        <label>Mã Giftcode</label>
+                        <input type="text" id="giftcode-input" class="form-control" style="text-transform:uppercase; font-weight:800; color:#db2777;" placeholder="Ví dụ: GOCNHO2026...">
+                    </div>
+                </div>
+
+                <div style="display:flex; gap:6px;">
+                    <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:35%; justify-content:center;" onclick="closeVipModal()">Hủy</button>
+                    <button class="btn btn-pink" style="width:65%; justify-content:center; padding:10px;" onclick="confirmPayment()">✨ XÁC NHẬN NẠP</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL CHỈNH SỬA THÔNG TIN CÁ NHÂN -->
+        <div class="modal-overlay" id="edit-profile-modal">
+            <div class="modal">
+                <div class="modal-title">✏️ Chỉnh Sửa Thông Tin</div>
+                <form onsubmit="saveProfileChanges(event)">
+                    <div class="form-group">
+                        <label>Ngày Sinh (dd/mm/yyyy)</label>
+                        <div class="dob-container">
+                            <input type="text" id="edit-dob-day" class="form-control dob-input" maxlength="2" placeholder="dd" oninput="moveToNext(this, 'edit-dob-month', 2)">
+                            <span class="dob-separator">/</span>
+                            <input type="text" id="edit-dob-month" class="form-control dob-input" maxlength="2" placeholder="mm" oninput="moveToNext(this, 'edit-dob-year', 2)">
+                            <span class="dob-separator">/</span>
+                            <input type="text" id="edit-dob-year" class="form-control dob-input" style="width: 70px;" maxlength="4" placeholder="yyyy">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Lớp Hiện Tại</label>
+                        <select id="edit-user-grade" class="form-control">
+                            <!-- Đổ JS -->
+                        </select>
+                    </div>
+
+                    <div style="border-top: 1px dashed #fbcfe8; margin: 10px 0; padding-top: 8px;">
+                        <label style="font-size: 10px; font-weight: 800; color: #db2777; display: block; margin-bottom: 6px;">ĐỔI MẬT KHẨU (TÙY CHỌN)</label>
+                        
+                        <div class="form-group">
+                            <label>Mật Khẩu Cũ</label>
+                            <input type="password" id="edit-old-pass" class="form-control" maxlength="50" placeholder="Nhập mật khẩu hiện tại...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mật Khẩu Mới (Lần 1)</label>
+                            <input type="password" id="edit-new-pass1" class="form-control" maxlength="50" placeholder="Nhập mật khẩu mới...">
+                        </div>
+
+                        <div class="form-group">
+                            <label>Mật Khẩu Mới (Lần 2)</label>
+                            <input type="password" id="edit-new-pass2" class="form-control" maxlength="50" placeholder="Xác nhận lại mật khẩu mới...">
+                        </div>
+                    </div>
+
+                    <div id="edit-profile-alert" class="alert-msg" style="margin-bottom: 8px;"></div>
+
+                    <div style="display:flex; gap:8px; margin-top:10px;">
+                        <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:50%; justify-content:center;" onclick="closeEditProfileModal()">Hủy</button>
+                        <button type="submit" class="btn btn-pink" style="width:50%; justify-content:center;">Lưu Thay Đổi ✨</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- MODAL THIẾT LẬP NGOẠI NGỮ 2 -->
+        <div class="modal-overlay" id="nn2-modal">
+            <div class="modal">
+                <div class="modal-title">🌐 Thiết Lập Ngoại Ngữ 2</div>
+                <div class="form-group">
+                    <label>Chọn Ngoại Ngữ 2 (Nếu Có)</label>
+                    <select id="nn2-select" class="form-control">
+                        <option value="">-- Không chọn --</option>
+                        <option value="Tiếng Nhật">Tiếng Nhật</option>
+                        <option value="Tiếng Hàn">Tiếng Hàn</option>
+                        <option value="Tiếng Trung">Tiếng Trung</option>
+                        <option value="Tiếng Đức">Tiếng Đức</option>
+                        <option value="Tiếng Nga">Tiếng Nga</option>
+                    </select>
+                </div>
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                    <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:50%; justify-content:center;" onclick="closeNn2Modal()">Hủy</button>
+                    <button type="button" class="btn btn-pink" style="width:50%; justify-content:center;" onclick="saveNn2Choice()">Lưu ✨</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL THIẾT LẬP 4 MÔN TỰ CHỌN (LỚP 10-12) -->
+        <div class="modal-overlay" id="elective-modal">
+            <div class="modal">
+                <div class="modal-title">⚙️ Chọn 4 Môn Tự Chọn</div>
+                <p style="font-size: 10px; color: #be185d; text-align: center; margin-bottom: 10px; font-weight: 600;">Chọn đúng 4 môn không được trùng nhau:</p>
+                
+                <div class="form-group">
+                    <label>Môn Tự Chọn 1</label>
+                    <select id="elective-sel-1" class="form-control elective-select"></select>
+                </div>
+                <div class="form-group">
+                    <label>Môn Tự Chọn 2</label>
+                    <select id="elective-sel-2" class="form-control elective-select"></select>
+                </div>
+                <div class="form-group">
+                    <label>Môn Tự Chọn 3</label>
+                    <select id="elective-sel-3" class="form-control elective-select"></select>
+                </div>
+                <div class="form-group">
+                    <label>Môn Tự Chọn 4</label>
+                    <select id="elective-sel-4" class="form-control elective-select"></select>
+                </div>
+
+                <div id="elective-alert" class="alert-msg"></div>
+
+                <div style="display:flex; gap:8px; margin-top:14px;">
+                    <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:50%; justify-content:center;" onclick="closeElectiveModal()">Hủy</button>
+                    <button type="button" class="btn btn-pink" style="width:50%; justify-content:center;" onclick="saveElectiveChoices()">Lưu ✨</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 3: XEM ĐỀ GIẤY & ĐÁP ÁN -->
+        <div class="modal-overlay" id="modalPrintExam">
+            <div class="modal" style="max-width: 380px;">
+                <div class="modal-title" id="printModalTitle">📄 Đề Bài & Đáp Án</div>
+                <div class="form-group" style="max-height: 250px; overflow-y: auto;" id="printExamBody">
+                </div>
+                <div style="display:flex; gap:6px; margin-top:14px;">
+                    <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:50%; justify-content:center;" onclick="closeModal('modalPrintExam')">Đóng</button>
+                    <button type="button" class="btn btn-pink" style="width:50%; justify-content:center;" onclick="alert('Đã tải đề thành công!')">Tải PDF 📥</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL 4: LÀM BÀI TRỰC TIẾP TRÊN APP (GIẢI MỀM) & XEM KẾT QUẢ -->
+        <div class="modal-overlay" id="modalAppQuiz">
+            <div class="modal" style="max-width: 380px;">
+                <div class="modal-title" id="appQuizTitle">💻 Giải Bài Tập Trực Tiếp</div>
+                <div class="form-group" style="max-height: 300px; overflow-y: auto;" id="appQuizBody">
+                </div>
+                <div style="display:flex; gap:6px; margin-top:14px;" id="quizActionButtons">
+                    <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:50%; justify-content:center;" onclick="closeModal('modalAppQuiz')">Hủy</button>
+                    <button type="button" class="btn btn-pink" style="width:50%; justify-content:center;" onclick="submitAppQuiz()">Nộp Bài 🚀</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Thanh điều hướng dưới cùng cố định -->
+        <nav class="bottom-nav">
+            <button class="nav-item" id="nav-btn-tkb" onclick="switchTab('tkb')">
+                <span>📅</span>
+                Thời gian biểu
+            </button>
+            <button class="nav-item active" id="nav-btn-ght" onclick="switchTab('ght')">
+                <span>📚</span>
+                Góc nhỏ học tập
+            </button>
+            <button class="nav-item" id="nav-btn-info" onclick="switchTab('info')">
+                <span>⚙️</span>
+                Thông tin
+            </button>
+        </nav>
+    </div>
+
+    <script>
+        let currentAuthMode = 'login';
+        let currentUser = null;
+        let events = [];
+        let currentSelectedEventId = null;
+
+        let selectedPackage = { type: '5m', price: 220000 };
+        let selectedMethod = 'momo';
+
+        const validGiftcodes = {
+            'GOCNHO2026': 'Vip 1 tháng',
+            'ADMINFREE': 'Vip 5 tháng',
+            'GIFT5M': 'Vip 5 tháng',
+            'VIPVIP1Y': 'Vip 1 năm'
+        };
+
+        // Biến cho phần Góc nhỏ học tập tích hợp
+        let currentGhtSubject = '';
+        let currentGhtTab = 'renLuyen';
+
+        const curriculumData = {
+            default: [
+                { 
+                    title: 'Chương I: Bản thử nghiệm', 
+                    lessons: ['Bài 1: Bản nội địa', 'Bài 2: Bản nội địa chia sẻ'] 
+                },
+                { 
+                    title: 'Chương II: Bản chính thức', 
+                    lessons: ['Bài 1: Hoàn thành chức năng phần mềm', 'Bài 2: Công khai phát triển phần mềm'] 
+                }
+            ]
+        };
+
+        const mockQuestions = [
+            {
+                id: 1,
+                question: "Yếu tố cốt lõi để tạo ra một phần mềm bằng cách lập trình là gì?",
+                options: ["Bàn phím", "Code", "Webcam", "Văn bản"],
+                correct: 1
+            },
+            {
+                id: 2,
+                question: "Phần mềm này tên gì?",
+                options: ["Phần mềm", "Ứng dụng học tập", "Góc Nhỏ Học Tập", "Thời gian biểu"],
+                correct: 2
+            }
+        ];
+
+        let historyList = [
+            { id: 1, title: 'Đề kiểm tra Thường xuyên', date: '2026-10-18', score: '2/2 (100%)' }
+        ];
+
+        function initGradeSelects() {
+            const gradeSelects = [document.getElementById('user-grade'), document.getElementById('edit-user-grade')];
+            gradeSelects.forEach(selectEl => {
+                if (!selectEl) return;
+                selectEl.innerHTML = '';
+                for (let i = 1; i <= 12; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = `Lớp ${i}`;
+                    if (i === 9) opt.selected = true;
+                    selectEl.appendChild(opt);
+                }
+            });
+        }
+
+        function switchAuthTab(mode) {
+            currentAuthMode = mode;
+            const tabLogin = document.getElementById('tab-login');
+            const tabRegister = document.getElementById('tab-register');
+            const registerFields = document.getElementById('register-fields');
+            const submitBtn = document.getElementById('auth-submit-btn');
+            const alertBox = document.getElementById('auth-alert');
+            
+            alertBox.textContent = '';
+
+            if (mode === 'login') {
+                tabLogin.classList.add('active');
+                tabRegister.classList.remove('active');
+                registerFields.classList.add('hidden');
+                submitBtn.textContent = 'Đăng Nhập Ngay';
+            } else {
+                tabRegister.classList.add('active');
+                tabLogin.classList.remove('active');
+                registerFields.classList.remove('hidden');
+                submitBtn.textContent = 'Đăng Ký Tài Khoản';
+            }
+        }
+
+        function moveToNext(current, nextFieldId, maxLen) {
+            if (current.value.length >= maxLen) {
+                const nextEl = document.getElementById(nextFieldId);
+                if (nextEl) nextEl.focus();
+            }
+        }
+
+        function handleAuthSubmit(event) {
+            event.preventDefault();
+            const usernameInput = document.getElementById('auth-username').value.trim();
+            const passwordInput = document.getElementById('auth-password').value;
+            const alertBox = document.getElementById('auth-alert');
+
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+
+            if (currentAuthMode === 'register') {
+                const day = document.getElementById('dob-day').value.trim();
+                const month = document.getElementById('dob-month').value.trim();
+                const year = document.getElementById('dob-year').value.trim();
+                const grade = document.getElementById('user-grade').value;
+
+                if (!usernameInput || !passwordInput) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '⚠️ Vui lòng điền đầy đủ tài khoản & mật khẩu!';
+                    return;
+                }
+
+                if (day.length < 2 || month.length < 2 || year.length < 4) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '⚠️ Vui lòng nhập đúng định dạng ngày sinh (dd/mm/yyyy)!';
+                    return;
+                }
+
+                if (usersDatabase[usernameInput]) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '❌ Tên tài khoản đã tồn tại!';
+                    return;
+                }
+
+                usersDatabase[usernameInput] = {
+                    password: passwordInput,
+                    dob: `${day}/${month}/${year}`,
+                    grade: grade,
+                    vipStatus: 'Thường',
+                    nn2: '',
+                    electives: [],
+                    events: []
+                };
+
+                localStorage.setItem('gocnho_users_db', JSON.stringify(usersDatabase));
+                alertBox.className = 'alert-msg text-success';
+                alertBox.textContent = '🎉 Đăng ký thành công! Đang chuyển sang đăng nhập...';
+
+                setTimeout(() => {
+                    switchAuthTab('login');
+                    document.getElementById('auth-username').value = usernameInput;
+                    document.getElementById('auth-password').value = '';
+                    alertBox.textContent = '';
+                }, 1200);
+
+            } else {
+                if (!usersDatabase[usernameInput]) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '❌ Tài khoản không tồn tại!';
+                    return;
+                }
+
+                if (usersDatabase[usernameInput].password !== passwordInput) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '❌ Mật khẩu không chính xác!';
+                    return;
+                }
+
+                currentUser = usernameInput;
+                localStorage.setItem('gocnho_current_user', currentUser);
+                loadUserData();
+                document.getElementById('auth-screen').classList.add('hidden');
+            }
+        }
+
+        function loadUserData() {
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (currentUser && usersDatabase[currentUser]) {
+                events = usersDatabase[currentUser].events || [];
+                const userObj = usersDatabase[currentUser];
+                const vip = userObj.vipStatus || 'Thường';
+                document.getElementById('header-greeting').textContent = `Chào ${currentUser} (Lớp ${userObj.grade})`;
+                document.getElementById('info-vip-status').innerHTML = `<b>Tài khoản:</b> ${vip}`;
+                document.getElementById('info-username').innerHTML = `<b>Tên tài khoản:</b> ${currentUser}`;
+                document.getElementById('info-dob').innerHTML = `<b>Ngày sinh:</b> ${userObj.dob}`;
+                document.getElementById('info-grade').innerHTML = `<b>Lớp hiện tại:</b> Lớp ${userObj.grade}`;
+
+                renderSubjects();
+                renderGhtSubjects();
+                updatePaymentNoteDisplays();
+            }
+            renderTable();
+        }
+
+        /* HÀM NẠP VIP / THANH TOÁN TÍCH HỢP */
+        function openVipModal() {
+            updatePaymentNoteDisplays();
+            document.getElementById('vip-modal').classList.add('active');
+        }
+
+        function closeVipModal() {
+            document.getElementById('vip-modal').classList.remove('active');
+        }
+
+        function selectPackage(type, price, element) {
+            selectedPackage = { type, price };
+
+            document.querySelectorAll('.pkg-card').forEach(card => card.classList.remove('active'));
+            element.classList.add('active');
+
+            const priceFormatted = price.toLocaleString('vi-VN') + ' VNĐ';
+            document.getElementById('momo-price-display').textContent = priceFormatted;
+            document.getElementById('bank-price-display').textContent = priceFormatted;
+
+            updatePaymentNoteDisplays();
+        }
+
+        function selectMethod(method, element) {
+            selectedMethod = method;
+
+            document.querySelectorAll('.method-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+
+            document.querySelectorAll('.payment-detail').forEach(detail => {
+                detail.classList.remove('active');
+            });
+
+            document.getElementById(`method-${method}`).classList.add('active');
+        }
+
+        function updatePaymentNoteDisplays() {
+            const userStr = currentUser || 'TaiKhoan';
+            const codeType = selectedPackage.type.toUpperCase();
+            const noteText = `GOCNHO ${codeType} ${userStr}`;
+            document.getElementById('momo-note-display').textContent = noteText;
+            document.getElementById('bank-note-display').textContent = noteText;
+        }
+
+        function confirmPayment() {
+            if (!currentUser) return;
+
+            if (selectedMethod === 'card') {
+                const serial = document.getElementById('card-serial').value.trim();
+                const pin = document.getElementById('card-pin').value.trim();
+
+                if (!serial || !pin) {
+                    alert('⚠️ Vui lòng nhập đầy đủ Mã Serial và Mã Thẻ Cào!');
+                    return;
+                }
+
+                alert(`🎉 Đã gửi thông tin thẻ cào thành công!\nHệ thống đang kiểm tra thẻ và sẽ tự động xử lý cho tài khoản ${currentUser} trong 1 - 3 phút nhé.`);
+                closeVipModal();
+            } else if (selectedMethod === 'code') {
+                const codeInput = document.getElementById('giftcode-input').value.trim().toUpperCase();
+
+                if (!codeInput) {
+                    alert('⚠️ Vui lòng nhập Mã Giftcode!');
+                    return;
+                }
+
+                if (validGiftcodes[codeInput]) {
+                    const vipPkgName = validGiftcodes[codeInput];
+                    let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+                    if (usersDatabase[currentUser]) {
+                        usersDatabase[currentUser].vipStatus = vipPkgName;
+                        localStorage.setItem('gocnho_users_db', JSON.stringify(usersDatabase));
+                        loadUserData();
+                    }
+                    alert(`🎉 KÍCH HOẠT THÀNH CÔNG!\nMã quà tặng hợp lệ. Tài khoản của bạn đã được nâng cấp lên gói ${vipPkgName}!`);
+                    document.getElementById('giftcode-input').value = '';
+                    closeVipModal();
+                } else {
+                    alert('❌ Mã Giftcode không chính xác hoặc đã hết hạn sử dụng! Vui lòng kiểm tra lại.');
+                }
+            } else {
+                const methodName = selectedMethod === 'momo' ? 'Ví MoMo' : 'Chuyển khoản Ngân hàng';
+                const pkgNameMap = { '1m': 'Vip 1 tháng', '5m': 'Vip 5 tháng', '1y': 'Vip 1 năm' };
+                const vipPkgName = pkgNameMap[selectedPackage.type] || 'Vip 5 tháng';
+
+                if (confirm(`📌 BẠN XÁC NHẬN ĐÃ CHUYỂN KHOẢN?\n\nSố tiền: ${selectedPackage.price.toLocaleString('vi-VN')} VNĐ qua ${methodName}.\n\nNút này sẽ tự động kích hoạt thử nghiệm gói ${vipPkgName} ngay lập tức cho bạn!`)) {
+                    let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+                    if (usersDatabase[currentUser]) {
+                        usersDatabase[currentUser].vipStatus = vipPkgName;
+                        localStorage.setItem('gocnho_users_db', JSON.stringify(usersDatabase));
+                        loadUserData();
+                    }
+                    alert(`🎉 Chúc mừng bạn đã nâng cấp thành công gói ${vipPkgName}!`);
+                    closeVipModal();
+                }
+            }
+        }
+
+        /* LẤY DANH SÁCH TÊN MÔN HỌC THUẦN TÚY ĐỒNG BỘ TỪ PHẦN THÔNG TIN */
+        function getPureSubjectsList(grade, userObj) {
+            const details = getSubjectsForGradeDetailed(grade, userObj);
+            let pureList = [];
+            details.forEach(item => {
+                if (typeof item === 'string') {
+                    pureList.push(item);
+                } else if (item.label) {
+                    pureList.push(item.label);
+                }
+            });
+            return pureList;
+        }
+
+        /* RENDER MÔN HỌC BÊN TAB THÔNG TIN */
+        function renderSubjects() {
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (!currentUser || !usersDatabase[currentUser]) return;
+
+            const userObj = usersDatabase[currentUser];
+            const grade = parseInt(userObj.grade) || 9;
+            const tagContainer = document.getElementById('subject-tag-list');
+            document.getElementById('subject-title-grade').textContent = `📚 Môn Học Hiện Tại (Lớp ${grade}):`;
+            tagContainer.innerHTML = '';
+
+            const subjectList = getSubjectsForGradeDetailed(grade, userObj);
+
+            subjectList.forEach(item => {
+                const badge = document.createElement('div');
+                badge.className = 'subject-badge';
+
+                if (typeof item === 'string') {
+                    badge.textContent = item;
+                } else if (item.type === 'nn2') {
+                    badge.innerHTML = `<span>${item.label}</span> <button class="btn-gear-icon" onclick="openNn2Modal()">⚙️</button>`;
+                } else if (item.type === 'elective') {
+                    badge.innerHTML = `<span>${item.label}</span> <button class="btn-gear-icon" onclick="openElectiveModal()">⚙️</button>`;
+                }
+
+                tagContainer.appendChild(badge);
+            });
+        }
+
+        function getSubjectsForGradeDetailed(grade, userObj) {
+            if (grade === 1 || grade === 2) return ['Tiếng Việt', 'Toán'];
+            if (grade === 3) return ['Tiếng Việt', 'Toán', 'Tiếng Anh', 'Tin học', 'Công nghệ'];
+            if (grade === 4 || grade === 5) return ['Tiếng Việt', 'Toán', 'Tiếng Anh', 'Khoa học', 'Lịch sử và Địa lí', 'Tin học', 'Công nghệ'];
+            if (grade >= 6 && grade <= 9) {
+                const nn2Text = userObj.nn2 ? `Ngoại Ngữ 2 (${userObj.nn2})` : 'Ngoại Ngữ 2';
+                return [
+                    'Toán', 'Ngữ Văn', 'Ngoại Ngữ 1 (Tiếng Anh)',
+                    { type: 'nn2', label: nn2Text },
+                    'KHTN', 'Lịch Sử và Địa Lí', 'Công Nghệ', 'Tin Học', 'GDCD'
+                ];
+            }
+            if (grade >= 10 && grade <= 12) {
+                const nn2Text = userObj.nn2 ? `Ngoại Ngữ 2 (${userObj.nn2})` : 'Ngoại Ngữ 2';
+                const electives = userObj.electives || [];
+                return [
+                    'Toán', 'Ngữ Văn', 'Ngoại Ngữ 1 (Tiếng Anh)',
+                    { type: 'nn2', label: nn2Text },
+                    'Lịch Sử',
+                    { type: 'elective', index: 0, label: electives[0] ? `MTC 1: ${electives[0]}` : 'Môn tự chọn 1' },
+                    { type: 'elective', index: 1, label: electives[1] ? `MTC 2: ${electives[1]}` : 'Môn tự chọn 2' },
+                    { type: 'elective', index: 2, label: electives[2] ? `MTC 3: ${electives[2]}` : 'Môn tự chọn 3' },
+                    { type: 'elective', index: 3, label: electives[3] ? `MTC 4: ${electives[3]}` : 'Môn tự chọn 4' }
+                ];
+            }
+            return [];
+        }
+
+        /* TÍCH HỢP GÓC NHỎ HỌC TẬP (BÀI TẬP & ĐỀ KIỂM TRA) ÁP DỤNG MỌI MÔN VÀ MỌI LỚP */
+        function renderGhtSubjects() {
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (!currentUser || !usersDatabase[currentUser]) return;
+
+            const userObj = usersDatabase[currentUser];
+            const grade = parseInt(userObj.grade) || 9;
+            document.getElementById('ght-grade-badge').textContent = `📚 Khối lớp: Lớp ${grade} (SGK Mới)`;
+
+            const rawSubjects = getPureSubjectsList(grade, userObj);
+            const subContainer = document.getElementById('ght-subject-list');
+            subContainer.innerHTML = '';
+
+            if (!currentGhtSubject || !rawSubjects.includes(currentGhtSubject)) {
+                currentGhtSubject = rawSubjects[0] || 'Toán';
+            }
+
+            rawSubjects.forEach(sub => {
+                const btn = document.createElement('button');
+                btn.className = `ght-sub-tab ${sub === currentGhtSubject ? 'active' : ''}`;
+                btn.textContent = sub;
+                btn.onclick = () => {
+                    currentGhtSubject = sub;
+                    renderGhtSubjects();
+                    renderGhtContent();
+                };
+                subContainer.appendChild(btn);
+            });
+
+            renderGhtContent();
+        }
+
+        function switchGhtTab(tabKey) {
+            currentGhtTab = tabKey;
+            document.querySelectorAll('.ght-inner-tab').forEach(b => b.classList.remove('active'));
+            document.getElementById(`ght-tab-${tabKey}`).classList.add('active');
+            renderGhtContent();
+        }
+
+        function renderGhtContent() {
+            const panel = document.getElementById('ght-content-panel');
+            const noticeDiv = `<div class="trial-notice">NỘI DUNG CHỈ ĐANG TRONG GIAI ĐOẠN THỬ NGHIỆM</div>`;
+            
+            if (currentGhtTab === 'renLuyen') {
+                const lessons = curriculumData.default;
+                let html = `<div style="font-weight: 800; font-size: 13px; color: #db2777; margin-bottom: 6px;">📖 Bài Tập Rèn Luyện - ${currentGhtSubject}</div>`;
+                lessons.forEach(chap => {
+                    html += `<div style="background:#fff5f8; border: 1px solid #fbcfe8; border-radius: 12px; padding: 6px 8px; margin-bottom: 6px;">
+                        <div style="font-weight: 700; font-size: 11px; color: #be185d; margin-bottom: 4px;">📌 ${chap.title}</div>`;
+                    chap.lessons.forEach(les => {
+                        html += `<div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 5px 8px; border-radius: 8px; margin-bottom: 4px; border: 1px solid #fde2e4;">
+                            <span style="font-size: 11px; font-weight: 600; color: #643843;">${les}</span>
+                            <div style="display: flex; gap: 4px;">
+                                <button onclick="openPaperModal('${les}')" style="background:#fce7f3; color:#db2777; border:none; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:700; cursor:pointer;">Giấy</button>
+                                <button onclick="startAppQuiz('${les}')" style="background:#f472b6; color:white; border:none; padding:3px 6px; border-radius:6px; font-size:10px; font-weight:700; cursor:pointer;">App</button>
+                            </div>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                });
+                panel.innerHTML = `<div>${html}</div>` + noticeDiv;
+            } else if (currentGhtTab === 'thuongXuyen') {
+                panel.innerHTML = `
+                    <div>
+                        <div style="font-weight: 800; font-size: 13px; color: #db2777; margin-bottom: 8px;">⏱ Kiểm Tra Thường Xuyên - ${currentGhtSubject}</div>
+                        <p style="font-size: 11px; color: #643843; margin-bottom: 10px;">Đề kiểm tra 15p - 45p chuẩn cấu trúc Bộ GD&ĐT.</p>
+                        <div style="display: flex; gap: 6px;">
+                            <button onclick="openPaperModal('Đề Kiểm Tra Thường Xuyên')" class="btn btn-pink" style="flex:1; justify-content:center; font-size:10px;">📄 Luyện Đề Giấy</button>
+                            <button onclick="startAppQuiz('Đề Kiểm Tra Thường Xuyên')" class="btn btn-ai" style="flex:1; justify-content:center; font-size:10px;">💻 Làm Trực Tiếp</button>
+                        </div>
+                    </div>
+                ` + noticeDiv;
+            } else if (currentGhtTab === 'giuaKy') {
+                panel.innerHTML = `
+                    <div>
+                        <div style="font-weight: 800; font-size: 13px; color: #db2777; margin-bottom: 8px;">🎯 Thi Giữa Học Kỳ - ${currentGhtSubject}</div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <div style="background:#fff5f8; padding:8px; border-radius:10px; border:1px solid #fbcfe8; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; font-weight:700; color:#831843;">Đề Thi Giữa Học Kỳ I</span>
+                                <button onclick="startAppQuiz('Giữa HK1')" class="btn btn-pink" style="font-size:10px; padding:4px 8px;">Vào thi</button>
+                            </div>
+                            <div style="background:#fff5f8; padding:8px; border-radius:10px; border:1px solid #fbcfe8; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; font-weight:700; color:#831843;">Đề Thi Giữa Học Kỳ II</span>
+                                <button onclick="startAppQuiz('Giữa HK2')" class="btn btn-pink" style="font-size:10px; padding:4px 8px;">Vào thi</button>
+                            </div>
+                        </div>
+                    </div>
+                ` + noticeDiv;
+            } else if (currentGhtTab === 'cuoiKy') {
+                panel.innerHTML = `
+                    <div>
+                        <div style="font-weight: 800; font-size: 13px; color: #db2777; margin-bottom: 8px;">🏆 Thi Cuối Học Kỳ - ${currentGhtSubject}</div>
+                        <div style="display: flex; flex-direction: column; gap: 6px;">
+                            <div style="background:#fff5f8; padding:8px; border-radius:10px; border:1px solid #fbcfe8; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; font-weight:700; color:#831843;">Đề Thi Cuối Học Kỳ I</span>
+                                <button onclick="startAppQuiz('Cuối HK1')" class="btn btn-ai" style="font-size:10px; padding:4px 8px;">Vào thi</button>
+                            </div>
+                            <div style="background:#fff5f8; padding:8px; border-radius:10px; border:1px solid #fbcfe8; display:flex; justify-content:space-between; align-items:center;">
+                                <span style="font-size:11px; font-weight:700; color:#831843;">Đề Thi Cuối Học Kỳ II</span>
+                                <button onclick="startAppQuiz('Cuối HK2')" class="btn btn-ai" style="font-size:10px; padding:4px 8px;">Vào thi</button>
+                            </div>
+                        </div>
+                    </div>
+                ` + noticeDiv;
+            } else if (currentGhtTab === 'baiCu') {
+                panel.innerHTML = `
+                    <div>
+                        <div style="font-weight: 800; font-size: 13px; color: #db2777; margin-bottom: 8px;">🕒 Quản Lý Bài Cũ & Lỗi Sai</div>
+                        <div style="font-size:11px; font-weight:700; color:#be185d; margin-bottom:4px;">Lịch sử đã làm (${currentGhtSubject}):</div>
+                        ${historyList.map(h => `<div style="background:#fff5f8; padding:6px; border-radius:8px; margin-bottom:4px; font-size:10px; display:flex; justify-content:space-between;"><span><b>${h.title}</b> (${h.date})</span><span style="color:#16a34a; font-weight:800;">${h.score}</span></div>`).join('')}
+                    </div>
+                ` + noticeDiv;
+            }
+        }
+
+        function openPaperModal(title) {
+            document.getElementById('printModalTitle').textContent = `📄 Đề Bài & Đáp Án: ${title} (${currentGhtSubject})`;
+            document.getElementById('printExamBody').innerHTML = `
+                <p style="font-size:11px; font-weight:700; color:#be185d; margin-bottom:4px;">PHẦN I. TRẮC NGHIỆM</p>
+                <p style="font-size:11px; color:#643843; margin-bottom:6px;">Câu 1: Yếu tố cốt lõi để tạo ra một phần mềm bằng cách lập trình là gì? (Đáp án: Code)</p>
+                <p style="font-size:11px; color:#643843; margin-bottom:6px;">Câu 2: Phần mềm này tên gì? (Đáp án: Góc Nhỏ Học Tập)</p>
+                <p style="font-size:11px; font-weight:700; color:#be185d; margin-bottom:4px;">PHẦN II. HƯỚNG DẪN GIẢI</p>
+                <p style="font-size:11px; color:#643843;">Nội dung bám sát SGK GDPT mới cho môn ${currentGhtSubject}.</p>
+            `;
+            document.getElementById('modalPrintExam').classList.add('active');
+        }
+
+        function startAppQuiz(title) {
+            document.getElementById('appQuizTitle').textContent = `💻 Giải Trực Tiếp: ${title} (${currentGhtSubject})`;
+            
+            let html = '';
+            mockQuestions.forEach((q, idx) => {
+                html += `<div style="margin-bottom: 12px; background: #fff5f8; padding: 8px; border-radius: 10px; border: 1.5px solid #fbcfe8;">
+                    <p style="font-size: 11px; font-weight: 700; color: #831843; margin-bottom: 6px;">Câu ${idx + 1}: ${q.question}</p>`;
+                q.options.forEach((opt, optIdx) => {
+                    html += `<label style="display:block; font-size: 11px; color: #643843; margin-bottom: 4px; cursor:pointer;">
+                        <input type="radio" name="q_${q.id}" value="${optIdx}" style="accent-color:#f472b6;"> ${opt}
+                    </label>`;
+                });
+                html += `</div>`;
+            });
+
+            document.getElementById('appQuizBody').innerHTML = html;
+            document.getElementById('quizActionButtons').innerHTML = `
+                <button type="button" class="btn" style="background:#f1f5f9; color:#64748b; width:50%; justify-content:center;" onclick="closeModal('modalAppQuiz')">Hủy</button>
+                <button type="button" class="btn btn-pink" style="width:50%; justify-content:center;" onclick="submitAppQuiz()">Nộp Bài 🚀</button>
+            `;
+            document.getElementById('modalAppQuiz').classList.add('active');
+        }
+
+        function submitAppQuiz() {
+            let correctCount = 0;
+            let total = mockQuestions.length;
+            let reviewHtml = `<div style="font-weight: 800; font-size: 13px; color: #db2777; margin-bottom: 8px; text-align: center;">📊 KẾT QUẢ BÀI LÀM</div>`;
+
+            let details = [];
+
+            mockQuestions.forEach((q, idx) => {
+                const radios = document.getElementsByName(`q_${q.id}`);
+                let selectedVal = -1;
+                for (let r of radios) {
+                    if (r.checked) {
+                        selectedVal = parseInt(r.value);
+                        break;
+                    }
+                }
+
+                const isCorrect = (selectedVal === q.correct);
+                if (isCorrect) correctCount++;
+
+                details.push({
+                    question: q.question,
+                    selectedText: selectedVal !== -1 ? q.options[selectedVal] : 'Chưa chọn',
+                    correctText: q.options[q.correct],
+                    isCorrect: isCorrect
+                });
+            });
+
+            const percentCorrect = Math.round((correctCount / total) * 100);
+            const percentIncorrect = 100 - percentCorrect;
+
+            reviewHtml += `
+                <div style="background: #ffe4e8; padding: 10px; border-radius: 12px; margin-bottom: 10px; text-align: center; border: 1px solid #ffccd5;">
+                    <p style="font-size: 12px; font-weight: 800; color: #831843;">Số câu đúng: ${correctCount}/${total}</p>
+                    <p style="font-size: 11px; font-weight: 700; color: #16a34a; margin-top: 2px;">Tỷ lệ đúng: ${percentCorrect}% | Sai: ${percentIncorrect}%</p>
+                </div>
+                <div style="font-size: 11px; font-weight: 800; color: #be185d; margin-bottom: 6px;">📝 Xem lại chi tiết & Hướng dẫn sửa lỗi sai:</div>
+            `;
+
+            details.forEach((d, idx) => {
+                const statusColor = d.isCorrect ? '#16a34a' : '#dc2626';
+                const statusText = d.isCorrect ? '✅ Đúng' : '❌ Sai';
+                reviewHtml += `
+                    <div style="background: #fff5f8; border: 1px solid #fbcfe8; border-radius: 10px; padding: 8px; margin-bottom: 6px; font-size: 10px;">
+                        <p style="font-weight: 700; color: #831843; margin-bottom: 2px;">Câu ${idx + 1}: ${d.question}</p>
+                        <p style="color: #643843;">Bạn chọn: <b>${d.selectedText}</b> <span style="color: ${statusColor}; font-weight: 800;">(${statusText})</span></p>
+                        ${!d.isCorrect ? `<p style="color: #16a34a; margin-top: 2px;">💡 Đáp án chuẩn: <b>${d.correctText}</b></p>` : ''}
+                    </div>
+                `;
+            });
+
+            const todayStr = new Date().toISOString().split('T')[0];
+            historyList.unshift({
+                id: Date.now(),
+                title: `Bài làm (${currentGhtSubject})`,
+                date: todayStr,
+                score: `${correctCount}/${total} (${percentCorrect}%)`
+            });
+
+            document.getElementById('appQuizBody').innerHTML = reviewHtml;
+            document.getElementById('quizActionButtons').innerHTML = `
+                <button type="button" class="btn btn-pink" style="width: 100%; justify-content: center;" onclick="closeModal('modalAppQuiz')">Hoàn Tất 🎉</button>
+            `;
+        }
+
+        /* XỬ LÝ MODAL NGOẠI NGỮ 2 */
+        function openNn2Modal() {
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (currentUser && usersDatabase[currentUser]) {
+                document.getElementById('nn2-select').value = usersDatabase[currentUser].nn2 || '';
+            }
+            document.getElementById('nn2-modal').classList.add('active');
+        }
+
+        function closeNn2Modal() {
+            document.getElementById('nn2-modal').classList.remove('active');
+        }
+
+        function saveNn2Choice() {
+            if (!currentUser) return;
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (usersDatabase[currentUser]) {
+                usersDatabase[currentUser].nn2 = document.getElementById('nn2-select').value;
+                localStorage.setItem('gocnho_users_db', JSON.stringify(usersDatabase));
+                renderSubjects();
+                renderGhtSubjects();
+                closeNn2Modal();
+            }
+        }
+
+        /* XỬ LÝ MODAL 4 MÔN TỰ CHỌN (LỚP 10-12) */
+        const electiveOptions = ['Địa lí', 'Giáo dục kinh tế và pháp luật', 'Vật lí', 'Hóa học', 'Sinh học', 'Công nghệ', 'Tin học'];
+
+        function openElectiveModal() {
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (!currentUser || !usersDatabase[currentUser]) return;
+
+            const savedElectives = usersDatabase[currentUser].electives || [];
+            document.getElementById('elective-alert').textContent = '';
+
+            for (let i = 1; i <= 4; i++) {
+                const sel = document.getElementById(`elective-sel-${i}`);
+                sel.innerHTML = '<option value="">-- Chọn môn --</option>';
+                electiveOptions.forEach(opt => {
+                    const optionEl = document.createElement('option');
+                    optionEl.value = opt;
+                    optionEl.textContent = opt;
+                    if (savedElectives[i - 1] === opt) optionEl.selected = true;
+                    sel.appendChild(optionEl);
+                });
+            }
+
+            document.getElementById('elective-modal').classList.add('active');
+        }
+
+        function closeElectiveModal() {
+            document.getElementById('elective-modal').classList.remove('active');
+        }
+
+        function saveElectiveChoices() {
+            if (!currentUser) return;
+            const alertBox = document.getElementById('elective-alert');
+            alertBox.textContent = '';
+
+            const selected = [];
+            for (let i = 1; i <= 4; i++) {
+                const val = document.getElementById(`elective-sel-${i}`).value;
+                if (!val) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '⚠️ Vui lòng chọn đủ 4 môn tự chọn!';
+                    return;
+                }
+                selected.push(val);
+            }
+
+            const uniqueSelected = new Set(selected);
+            if (uniqueSelected.size < 4) {
+                alertBox.className = 'alert-msg text-error';
+                alertBox.textContent = '❌ Các môn tự chọn không được trùng nhau!';
+                return;
+            }
+
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (usersDatabase[currentUser]) {
+                usersDatabase[currentUser].electives = selected;
+                localStorage.setItem('gocnho_users_db', JSON.stringify(usersDatabase));
+                renderSubjects();
+                renderGhtSubjects();
+                closeElectiveModal();
+            }
+        }
+
+        function saveUserDataToStorage() {
+            if (!currentUser) return;
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (usersDatabase[currentUser]) {
+                usersDatabase[currentUser].events = events;
+                localStorage.setItem('gocnho_users_db', JSON.stringify(usersDatabase));
+            }
+        }
+
+        /* XỬ LÝ CHỈNH SỬA THÔNG TIN CÁ NHÂN & MẬT KHẨU */
+        function openEditProfileModal() {
+            if (!currentUser) return;
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            const userObj = usersDatabase[currentUser];
+            if (!userObj) return;
+
+            const alertBox = document.getElementById('edit-profile-alert');
+            alertBox.textContent = '';
+            
+            const parts = (userObj.dob || "01/01/2008").split('/');
+            document.getElementById('edit-dob-day').value = parts[0] || '';
+            document.getElementById('edit-dob-month').value = parts[1] || '';
+            document.getElementById('edit-dob-year').value = parts[2] || '';
+
+            document.getElementById('edit-user-grade').value = userObj.grade || 9;
+            document.getElementById('edit-old-pass').value = '';
+            document.getElementById('edit-new-pass1').value = '';
+            document.getElementById('edit-new-pass2').value = '';
+
+            document.getElementById('edit-profile-modal').classList.add('active');
+        }
+
+        function closeEditProfileModal() {
+            document.getElementById('edit-profile-modal').classList.remove('active');
+        }
+
+        function saveProfileChanges(e) {
+            e.preventDefault();
+            if (!currentUser) return;
+
+            const alertBox = document.getElementById('edit-profile-alert');
+            alertBox.textContent = '';
+
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            const userObj = usersDatabase[currentUser];
+            if (!userObj) return;
+
+            const day = document.getElementById('edit-dob-day').value.trim();
+            const month = document.getElementById('edit-dob-month').value.trim();
+            const year = document.getElementById('edit-dob-year').value.trim();
+            const grade = document.getElementById('edit-user-grade').value;
+
+            if (day.length < 2 || month.length < 2 || year.length < 4) {
+                alertBox.className = 'alert-msg text-error';
+                alertBox.textContent = '⚠️ Ngày sinh chưa đúng định dạng (dd/mm/yyyy)!';
+                return;
+            }
+
+            const oldPass = document.getElementById('edit-old-pass').value;
+            const newPass1 = document.getElementById('edit-new-pass1').value;
+            const newPass2 = document.getElementById('edit-new-pass2').value;
+
+            if (oldPass || newPass1 || newPass2) {
+                if (oldPass !== userObj.password) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '❌ Mật khẩu cũ không chính xác!';
+                    return;
+                }
+                if (!newPass1 || !newPass2) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '⚠️ Vui lòng nhập mật khẩu mới đầy đủ 2 lần!';
+                    return;
+                }
+                if (newPass1 !== newPass2) {
+                    alertBox.className = 'alert-msg text-error';
+                    alertBox.textContent = '❌ Mật khẩu mới nhập 2 lần không trùng khớp!';
+                    return;
+                }
+                userObj.password = newPass1;
+            }
+
+            userObj.dob = `${day}/${month}/${year}`;
+            userObj.grade = grade;
+
+            usersDatabase[currentUser] = userObj;
+            localStorage.setItem('gocnho_users_db', JSON.stringify(usersDatabase));
+
+            alertBox.className = 'alert-msg text-success';
+            alertBox.textContent = '🎉 Cập nhật thông tin thành công!';
+
+            setTimeout(() => {
+                loadUserData();
+                closeEditProfileModal();
+            }, 1000);
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('gocnho_current_user');
+            currentUser = null;
+            events = [];
+            document.getElementById('auth-username').value = '';
+            document.getElementById('auth-password').value = '';
+            document.getElementById('auth-alert').textContent = '';
+            document.getElementById('auth-screen').classList.remove('hidden');
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            initGradeSelects();
+            initModalSelectors();
+            const savedUser = localStorage.getItem('gocnho_current_user');
+            let usersDatabase = JSON.parse(localStorage.getItem('gocnho_users_db') || '{}');
+            if (savedUser && usersDatabase[savedUser]) {
+                currentUser = savedUser;
+                document.getElementById('auth-screen').classList.add('hidden');
+                loadUserData();
+            } else {
+                renderTable();
+            }
+        });
+
+        function switchTab(tabName) {
+            const tabs = ['tkb', 'ght', 'info'];
+            tabs.forEach(t => {
+                document.getElementById(`tab-${t}`).classList.remove('active');
+                document.getElementById(`nav-btn-${t}`).classList.remove('active');
+            });
+            document.getElementById(`tab-${tabName}`).classList.add('active');
+            document.getElementById(`nav-btn-${tabName}`).classList.add('active');
+            if (tabName === 'ght') {
+                renderGhtSubjects();
+            }
+        }
+
+        function initModalSelectors() {
+            const sH = document.getElementById('start-hour');
+            const eH = document.getElementById('end-hour');
+            const sM = document.getElementById('start-min');
+            const eM = document.getElementById('end-min');
+
+            sH.innerHTML = ''; eH.innerHTML = '<option value="">-- Giờ --</option>'; 
+            sM.innerHTML = ''; eM.innerHTML = '<option value="">-- Phút --</option>';
+
+            for (let h = 0; h <= 24; h++) {
+                const hStr = h.toString().padStart(2, '0') + 'h';
+                sH.add(new Option(hStr, h));
+                eH.add(new Option(hStr, h));
+            }
+            for (let m = 0; m < 60; m += 15) {
+                const mStr = m.toString().padStart(2, '0') + 'p';
+                sM.add(new Option(mStr, m));
+                eM.add(new Option(mStr, m));
+            }
+        }
+
+        function validateEventName(input) {
+            if (input.value.length > 15) {
+                input.value = input.value.substring(0, 15);
+            }
+        }
+
+        function updateUpcomingReminder() {
+            const reminderEl = document.getElementById('upcoming-reminder');
+            if (events.length === 0) {
+                reminderEl.innerHTML = `<span>📌 Lịch sắp tới: Chưa có sự kiện nào được lên lịch</span>`;
+                return;
+            }
+
+            const now = new Date();
+            const currentDay = now.getDay() === 0 ? 8 : now.getDay() + 1;
+            const curMinutes = now.getHours() * 60 + now.getMinutes();
+
+            let upcoming = events.find(ev => (ev.days || [ev.day]).includes(currentDay) && (ev.startHour * 60 + ev.startMin) >= curMinutes);
+            
+            if (!upcoming && events.length > 0) {
+                upcoming = events[0];
+            }
+
+            if (upcoming) {
+                const dayNames = {2: 'Thứ 2', 3: 'Thứ 3', 4: 'Thứ 4', 5: 'Thứ 5', 6: 'Thứ 6', 7: 'Thứ 7', 8: 'Chủ Nhật'};
+                const targetDays = upcoming.days || [upcoming.day];
+                const daysStr = targetDays.map(d => dayNames[d]).join(', ');
+                const timeStr = `${upcoming.startHour.toString().padStart(2, '0')}:${upcoming.startMin.toString().padStart(2, '0')}`;
+                reminderEl.innerHTML = `<span>📌 Sắp tới: <b>${upcoming.name}</b> (${daysStr} lúc ${timeStr})</span>`;
+            }
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('schedule-body');
+            tbody.innerHTML = '';
+
+            for (let hour = 0; hour <= 24; hour++) {
+                const tr = document.createElement('tr');
+                const tdTime = document.createElement('td');
+                tdTime.className = 'time-col';
+                tdTime.textContent = `${hour.toString().padStart(2, '0')}:00`;
+                tr.appendChild(tdTime);
+
+                for (let day = 2; day <= 8; day++) {
+                    const td = document.createElement('td');
+                    td.setAttribute('data-day', day);
+                    td.setAttribute('data-hour', hour);
+                    tr.appendChild(td);
+                }
+                tbody.appendChild(tr);
+            }
+
+            setTimeout(() => {
+                events.forEach(ev => {
+                    const startH = ev.startHour;
+                    const startM = ev.startMin || 0;
+                    const hasEnd = ev.endHour !== null && ev.endHour !== undefined && ev.endHour !== "";
+                    const eventDays = ev.days || [ev.day];
+                    
+                    eventDays.forEach(day => {
+                        const startCell = document.querySelector(`td[data-day="${day}"][data-hour="${startH}"]`);
+                        if (startCell) {
+                            const cellHeight = startCell.offsetHeight || 36;
+                            const topOffset = (startM / 60) * cellHeight;
+
+                            if (hasEnd) {
+                                const endH = parseInt(ev.endHour);
+                                const endM = ev.endMin !== null && ev.endMin !== undefined && ev.endMin !== "" ? parseInt(ev.endMin) : startM;
+                                const durationMinutes = (endH * 60 + endM) - (startH * 60 + startM);
+                                const blockHeight = Math.max(36, (durationMinutes / 60) * cellHeight);
+
+                                const block = document.createElement('div');
+                                block.className = 'event-block';
+                                block.style.top = `${topOffset}px`;
+                                block.style.height = `${blockHeight}px`;
+
+                                const timeText = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')} - ${endH.toString().padStart(2, '0')}:${endM.toString().padStart(2, '0')}`;
+
+                                block.innerHTML = `
+                                    <span class="event-del" onclick="event.stopPropagation(); deleteEvent('${ev.id}')">✕</span>
+                                    <div class="event-name-text">${ev.name}</div>
+                                    <div class="event-time">⏱ ${timeText}</div>
+                                `;
+                                block.onclick = () => showEventDetail(ev);
+                                startCell.appendChild(block);
+                            } else {
+                                const line = document.createElement('div');
+                                line.className = 'event-line';
+                                line.style.top = `${topOffset}px`;
+
+                                const timeText = `${startH.toString().padStart(2, '0')}:${startM.toString().padStart(2, '0')}`;
+
+                                line.innerHTML = `
+                                    <span class="event-del" onclick="event.stopPropagation(); deleteEvent('${ev.id}')">✕</span>
+                                    <div class="event-name-text">${ev.name}</div>
+                                    <div class="event-time">⏱ ${timeText}</div>
+                                `;
+                                line.onclick = () => showEventDetail(ev);
+                                startCell.appendChild(line);
+                            }
+                        }
+                    });
+                });
+            }, 10);
+
+            updateUpcomingReminder();
+        }
+
+        function showEventDetail(ev) {
+            currentSelectedEventId = ev.id;
+            const dayNames = {2: 'Thứ 2', 3: 'Thứ 3', 4: 'Thứ 4', 5: 'Thứ 5', 6: 'Thứ 6', 7: 'Thứ 7', 8: 'Chủ Nhật'};
+            const eventDays = ev.days || [ev.day];
+            const daysStr = eventDays.map(d => dayNames[d]).join(', ');
+            
+            const startStr = `${ev.startHour.toString().padStart(2, '0')}:${(ev.startMin || 0).toString().padStart(2, '0')}`;
+            let timeInfo = `Thời gian bắt đầu: ${startStr}`;
+            
+            if (ev.endHour !== null && ev.endHour !== undefined && ev.endHour !== "") {
+                const endStr = `${ev.endHour.toString().padStart(2, '0')}:${(ev.endMin || 0).toString().padStart(2, '0')}`;
+                timeInfo = `Thời gian: ${startStr} đến ${endStr}`;
+            }
+
+            document.getElementById('detail-title').innerText = ev.name;
+            document.getElementById('detail-content').innerHTML = `
+                <p><b>Ngày áp dụng:</b> ${daysStr}</p>
+                <p><b>${timeInfo}</b></p>
+            `;
+            document.getElementById('detail-modal').classList.add('active');
+        }
+
+        function closeDetailModal() {
+            document.getElementById('detail-modal').classList.remove('active');
+        }
+
+        function openModal(editData = null) {
+            const checkboxes = document.querySelectorAll('input[name="event-days"]');
+            checkboxes.forEach(cb => cb.checked = false);
+
+            if (editData) {
+                document.getElementById('modal-main-title').innerText = '✏️ Chỉnh Sửa Thời Gian';
+                document.getElementById('event-edit-id').value = editData.id;
+                document.getElementById('event-name').value = editData.name;
+                
+                const days = editData.days || [editData.day];
+                checkboxes.forEach(cb => {
+                    if (days.includes(parseInt(cb.value))) cb.checked = true;
+                });
+
+                document.getElementById('start-hour').value = editData.startHour;
+                document.getElementById('start-min').value = editData.startMin;
+                document.getElementById('end-hour').value = editData.endHour !== null && editData.endHour !== undefined ? editData.endHour : "";
+                document.getElementById('end-min').value = editData.endMin !== null && editData.endMin !== undefined ? editData.endMin : "";
+            } else {
+                document.getElementById('modal-main-title').innerText = '➕ Tạo Thời Gian Mới';
+                document.getElementById('event-edit-id').value = '';
+                document.getElementById('event-name').value = '';
+                checkboxes.forEach(cb => { if (cb.value === '2') cb.checked = true; });
+                document.getElementById('start-hour').value = 7;
+                document.getElementById('start-min').value = 0;
+                document.getElementById('end-hour').value = '';
+                document.getElementById('end-min').value = '';
+            }
+
+            document.getElementById('event-modal').classList.add('active');
+        }
+
+        function closeModal(modalId) {
+            if (modalId) {
+                document.getElementById(modalId).classList.remove('active');
+            } else {
+                document.getElementById('event-modal').classList.remove('active');
+            }
+        }
+
+        function editCurrentEvent() {
+            closeDetailModal();
+            const ev = events.find(e => e.id === currentSelectedEventId);
+            if (ev) openModal(ev);
+        }
+
+        function saveEvent(e) {
+            e.preventDefault();
+            const editId = document.getElementById('event-edit-id').value;
+            const rawName = document.getElementById('event-name').value.trim();
+            const eventName = rawName.substring(0, 15);
+
+            const selectedDays = [];
+            document.querySelectorAll('input[name="event-days"]:checked').forEach(cb => {
+                selectedDays.push(parseInt(cb.value));
+            });
+
+            if (selectedDays.length === 0) {
+                alert("Vui lòng chọn ít nhất một ngày áp dụng!");
+                return;
+            }
+
+            const endHVal = document.getElementById('end-hour').value;
+            const endMVal = document.getElementById('end-min').value;
+
+            if (editId) {
+                events = events.map(ev => {
+                    if (ev.id === editId) {
+                        return {
+                            ...ev,
+                            name: eventName,
+                            days: selectedDays,
+                            day: selectedDays[0],
+                            startHour: parseInt(document.getElementById('start-hour').value),
+                            startMin: parseInt(document.getElementById('start-min').value),
+                            endHour: endHVal !== "" ? parseInt(endHVal) : null,
+                            endMin: endMVal !== "" ? parseInt(endMVal) : null
+                        };
+                    }
+                    return ev;
+                });
+            } else {
+                const newEvent = {
+                    id: Date.now().toString(),
+                    name: eventName,
+                    days: selectedDays,
+                    day: selectedDays[0],
+                    startHour: parseInt(document.getElementById('start-hour').value),
+                    startMin: parseInt(document.getElementById('start-min').value),
+                    endHour: endHVal !== "" ? parseInt(endHVal) : null,
+                    endMin: endMVal !== "" ? parseInt(endMVal) : null
+                };
+                events.push(newEvent);
+            }
+
+            saveUserDataToStorage();
+            renderTable();
+            closeModal();
+        }
+
+        function deleteEvent(id) {
+            events = events.filter(e => e.id !== id);
+            saveUserDataToStorage();
+            renderTable();
+        }
+
+        function generateAISchedule() {
+            if (confirm("✨ Trợ lý AI sẽ tự động lập thời khóa biểu khoa học cho bạn nhé?")) {
+                events = [
+                    { id: '1', name: 'Thức dậy 🌅', days: [2,3,4,5,6,7,8], day: 2, startHour: 6, startMin: 0, endHour: null, endMin: null },
+                    { id: '2', name: 'Học Toán 📚', days: [2, 4], day: 2, startHour: 17, startMin: 30, endHour: 19, endMin: 45 },
+                    { id: '3', name: 'Học Góc Nhỏ 📚', days: [3, 5], day: 3, startHour: 19, startMin: 0, endHour: 21, endMin: 0 }
+                ];
+                saveUserDataToStorage();
+                renderTable();
+                alert("🎉 Trợ lý AI đã phân bổ lịch thành công!");
+            }
+        }
+
+        function requestNotiPermission() {
+            if ('Notification' in window) {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        document.getElementById('noti-banner').innerHTML = '✅ <b>Đã bật thông báo!</b>';
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+</html>
